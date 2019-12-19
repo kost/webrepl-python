@@ -1,0 +1,162 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import sys
+
+import webrepl
+
+examples="""webreplcmd --host 192.168.4.1 --password ulx3s ls
+webreplcmd --host 192.168.4.1 --password ulx3s get src-remote-file.txt dest-local-file.txt
+webreplcmd --host 192.168.4.1 --password ulx3s put src-local-file.txt dest-remote-file.txt
+webreplcmd --host 192.168.4.1 --password ulx3s cat main.py
+webreplcmd --host 192.168.4.1 --password ulx3s cmd 'import os; os.listdir()'
+"""
+
+parser = argparse.ArgumentParser(description='webrepl - connect to websocket webrepl',
+  formatter_class=argparse.RawDescriptionHelpFormatter,
+  epilog=examples)
+parser.add_argument('--host', '-i', default=os.environ.get('webrepl_HOST', None), help="Host to connect to")
+parser.add_argument('--port', '-P', type=int, default=os.environ.get('webrepl_PORT', 8266), help="Port to connect to")
+parser.add_argument('--verbose', '-v', action='store_true', help="Verbose information")
+parser.add_argument('--debug', '-d', action='store_true', help="Enable debugging messages")
+parser.add_argument('--password', '-p', default=os.environ.get('webrepl_PASSWORD', None), help="Use following password to connect")
+parser.add_argument('--before', '-B', action='append', default=os.environ.get('webrepl_BEFORE', None), help="command to execute before")
+parser.add_argument('--cmd', '-c', action='append', default=os.environ.get('webrepl_CMD', None), help="command to execute")
+parser.add_argument('--after', '-A', action='append', default=os.environ.get('webrepl_AFTER', None), help="command to execute after")
+parser.add_argument('commands', metavar='CMD', type=str, nargs='+',
+                    help='commands for repl')
+
+args = parser.parse_args()
+
+if not args.host:
+  print("You need to specify host")
+  parser.print_usage()
+  sys.exit()
+
+password=''
+if not args.password:
+  print("You need to specify password")
+  try:
+    import getpass
+    password = getpass.getpass()
+  except:
+    parser.print_usage()
+    sys.exit()
+else:
+  password = args.password
+
+if not args.commands or len(args.commands)<1:
+  print("Command is not recognized/given")
+  parser.print_usage()
+  sys.exit()
+
+repl=webrepl.Webrepl(**{})
+
+if args.debug:
+  repl.debug = True
+
+if args.verbose:
+  repl.verbose = True
+
+try:
+  repl.connect(args.host, args.port)
+  repl.login(password)
+except Exception as e:
+  print("Error connecting to host",args.host,"at port",args.port,":",e)
+  sys.exit()
+
+if not repl.connected:
+  print("Not connected. Check your password!")
+  sys.exit()
+
+if args.before:
+  for cmd in args.before:
+    print("[i] Issuing command: "+cmd)
+    try:
+      r=repl.send_cmd(cmd)
+      print(r.decode())
+    except Exception as e:
+      print("[e] Error running command:",cmd,":",e)
+
+cmd = args.commands[0].lower()
+
+if cmd == "ver" or cmd == "version":
+  if args.verbose:
+    print("[i] Getting version")
+  ver=repl.get_ver()
+  print("[i] Version ",ver[0], ver[1], ver[2])
+elif cmd == "list" or cmd == "ls":
+  print("[i] Listing")
+  r=repl.sendcmd("import os; os.listdir()")
+  print(r.decode())
+elif cmd == "get" or cmd == "download":
+  if len(args.commands)<3:
+    sys.stderr.write("Not enough arguments for "+cmd+"\n")
+    sys.exit()
+  source=args.commands[1]
+  dest=args.commands[2]
+  if args.verbose:
+    print("[i] Downloading "+source+" to "+dest)
+  repl.get_file(source, dest)
+elif cmd == "put" or cmd == "upload":
+  if len(args.commands)<3:
+    sys.stderr.write("Not enough arguments for "+cmd+"\n")
+    sys.exit()
+  source=args.commands[1]
+  dest=args.commands[2]
+  if args.verbose:
+    print("[i] Uploading "+source+" to "+dest)
+  repl.put_file(source, dest)
+elif cmd == "del" or cmd == "rm" or cmd == "dele":
+  if len(args.commands)<2:
+    sys.stderr.write("Not enough arguments for "+cmd+"\n")
+    sys.exit()
+  filename=args.commands[1]
+  if args.verbose:
+    print("[i] Deleting "+filename)
+  r=repl.sendcmd("import os; os.remove('"+filename+"')")
+  print(r.decode())
+elif cmd == "print" or cmd == "cat" or cmd == "type":
+  if len(args.commands)<2:
+    sys.stderr.write("Not enough arguments for "+cmd+"\n")
+    sys.exit()
+  source=args.commands[1]
+  if args.verbose:
+    print("[i] Content of file",source)
+  r=repl.get_file_content(source)
+  print(r.decode())
+elif cmd == "command" or cmd == "cmd":
+  if len(args.commands)<2:
+    sys.stderr.write("Not enough arguments for "+cmd+"\n")
+    sys.exit()
+  cmd=args.commands[1]
+  if args.verbose:
+    print("[i] Executing "+cmd)
+  r=repl.sendcmd(cmd)
+  print(r.decode())
+else:
+  sys.stderr.write("Command not recognized\n")
+
+if args.cmd:
+  for cmd in args.cmd:
+    print("[i] Issuing command: "+cmd)
+    try:
+      r=repl.send_cmd(cmd)
+      print(r.decode())
+    except Exception as e:
+      print("[e] Error running command:",cmd,":",e)
+
+if args.after:
+  for cmd in args.after:
+    print("[i] Issuing command: "+cmd)
+    try:
+      r=repl.send_cmd(cmd)
+      print(r.decode())
+    except Exception as e:
+      print("[e] Error running command:",cmd,":",e)
+
+if args.verbose:
+  print("[i] closing REPL/WS")
+repl.disconnect()
+
