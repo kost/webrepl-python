@@ -16,14 +16,14 @@ webreplcmd --host 192.168.4.1 --password ulx3s cmd 'import os; os.listdir()'
 parser = argparse.ArgumentParser(description='webrepl - connect to websocket webrepl',
   formatter_class=argparse.RawDescriptionHelpFormatter,
   epilog=examples)
-parser.add_argument('--host', '-i', default=os.environ.get('webrepl_HOST', None), help="Host to connect to")
-parser.add_argument('--port', '-P', type=int, default=os.environ.get('webrepl_PORT', 8266), help="Port to connect to")
+parser.add_argument('--host', '-i', default=os.environ.get('WEBREPL_HOST', None), help="Host to connect to")
+parser.add_argument('--port', '-P', type=int, default=os.environ.get('WEBREPL_PORT', 8266), help="Port to connect to")
 parser.add_argument('--verbose', '-v', action='store_true', help="Verbose information")
 parser.add_argument('--debug', '-d', action='store_true', help="Enable debugging messages")
-parser.add_argument('--password', '-p', default=os.environ.get('webrepl_PASSWORD', None), help="Use following password to connect")
-parser.add_argument('--before', '-B', action='append', default=os.environ.get('webrepl_BEFORE', None), help="command to execute before")
-parser.add_argument('--cmd', '-c', action='append', default=os.environ.get('webrepl_CMD', None), help="command to execute")
-parser.add_argument('--after', '-A', action='append', default=os.environ.get('webrepl_AFTER', None), help="command to execute after")
+parser.add_argument('--password', '-p', default=os.environ.get('WEBREPL_PASSWORD', None), help="Use following password to connect")
+parser.add_argument('--before', '-B', action='append', default=os.environ.get('WEBREPL_BEFORE', None), help="command to execute before")
+parser.add_argument('--cmd', '-c', action='append', default=os.environ.get('WEBREPL_CMD', None), help="command to execute")
+parser.add_argument('--after', '-A', action='append', default=os.environ.get('WEBREPL_AFTER', None), help="command to execute after")
 parser.add_argument('commands', metavar='CMD', type=str, nargs='+',
                     help='commands for repl')
 

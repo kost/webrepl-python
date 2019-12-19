@@ -47,9 +47,9 @@ webreplcmd --host 192.168.4.1 --password ulx3s rm uftpd.py
 
 Note that you can also specify basic parameters using environment variables:
 ```
-export webrepl_HOST=127.0.0.1
-export webrepl_PASSWORD=ulx3s
-export webrepl_PORT=8266
+export WEBREPL_HOST=127.0.0.1
+export WEBREPL_PASSWORD=ulx3s
+export WEBREPL_PORT=8266
 ```
 
 and then you can just specify command:
