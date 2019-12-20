@@ -1,25 +1,17 @@
 language: python
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"      # current default Python on Travis CI
-  - "3.7"
-  - "3.8"
-  - "3.8-dev"  # 3.8 development branch
-  - "nightly"  # nightly build
-# command to install dependencies
-#install:
-#  - pip install -r requirements.txt
-# command to run tests
-#script:
-#  - pytest
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
+- '3.7'
+- '3.8'
+- 3.8-dev
+- nightly
 deploy:
   provider: pypi
-  user: "__token__"
+  user: __token__
   password:
-    secure: ""
+    secure: gbd+nUq68uWyvpi8Ih7Gx+e+7KDqRWZBAnH8exOSAfo94tigFAZlHMyKMKVBNlqjv3pSWcr2lD5Gd8QrGs4kFOGe4PbzzsTby53txY77TGR8FmvstXpvXg2xGSWS6UGkovwvTmCm49BRh5kTzirkV6f5J8pWpK98Rq62UfGADdBlDUqrcBEi8VDN6iBo9YZ81L5sb1a3V6rm2T1rWKyAXm6byCULvESbmaW/zZH/rxUQyKSlYiDtIbapcvSauS6idfKIlV21dFuKPr3+xSod25qgM7DJrLPke9j2EHfuOSGJY/cSwp7lCygAeMrc5hByfSXbqU+xuxYs28i4R1g1DO6chcNShQBZB+rn1Xh2QQVDn3Rlt29dFPTLiHOBoY1PmSyHc7FTaqNuKZR9U4+x3cePf+9WsaEZe0dXcKkWneFPF+KYYql04PUc0d283eDJerXravWk1mjndKsKPd4Y//lNi+JtwvOuC53L1126VO3NsHztV8hEhkpsuh95JN8fyszkEg8CC6ao2wMbkDQ3u3UjvxD04u/z323ibEE9P87Kwg4Tka8gBYRr4pk4vkSTfOz4LLgUKi+sIHtFN5whOWLr9rmy14NUZKYBI7v0XOOkMDVIZ6TVYObB2TFIP+xFTg0iOmrK+aTx/sHdVfbxVLS97asmyydlGDjQU/s5nII=
   on:
-      tags: true
-
-
+    tags: true
