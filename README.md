@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kost/webrepl-python.png)](https://travis-ci.org/kost/webrepl-python)
+
 webrepl
 ======
 Python module to handle micropython websocket (WS) repl protocol (client side only). It is modified original implementation to automatize working with web repl.
