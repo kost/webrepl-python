@@ -109,3 +109,11 @@ webreplcmd --host 192.168.4.1 --password ulx3s put src-local-file.txt dest-remot
 webreplcmd --host 192.168.4.1 --password ulx3s cat main.py
 webreplcmd --host 192.168.4.1 --password ulx3s cmd 'import os; os.listdir()'
 ```
+
+# Credits
+
+webrepl is derivative of [micropython's webrepl](https://github.com/micropython/webrepl) which is:
+Copyright (c) 2016 Damien P. George
+Copyright (c) 2016 Paul Sokolovsky
+
+
